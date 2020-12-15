@@ -1,21 +1,26 @@
 import  {useState} from "react";
+import Header from "./Header";
+import Form from "./Form";
+import Todos from "./Todos";
 
 function App() {
 
  const [todos, setTodos] = useState([
      {
          text: "Купить бананы",
-         favorite: true,
+         favorite: false,
      },
      {
          text: "Продать квартиру",
-         favorite: true,
+         favorite: false,
      },
      {
          text: "Выучить уроки по JS",
          favorite: false,
      }
  ]);
+
+ const [text, setText] = useState("")
 
     const deleteTodo = (indexOfRemovingItem) => {
         const filtered = todos.filter((todo, index)  => {
@@ -27,38 +32,39 @@ function App() {
         setTodos(filtered);
     }
 
+ const makeFavorite = (i) =>{
+      const newTodos = todos.map((item, index) => {
+             if (i === index){
+                 return {
+                     ...item,
+                     favorite: !item.favorite
+                 }
+             }
 
- const newTodos = todos.map((todo, index) => {
 
-      return(
-          <div className={`todo ${todo.favorite ? 'selected' : ''}`}>
-              <div className="favorite">
-                  <span>*</span>
-              </div>
-              <div className="todo-text">
-                  {todo.text}
-              </div>
-              <div className="actions">
-                  <button onClick={() => deleteTodo(index)}>X</button>
-              </div>
-          </div>
-      )
+         return item;
       });
+        setTodos(newTodos);
+    }
+
+
+
+ const addTodo = () => {
+     setTodos([
+         {
+         text: text,
+         favorite: false
+     },
+         ...todos
+     ]);
+     setText("");
+ }
 
     return (
     <div className="app">
-      <div className="header">
-        Список дел
-      </div>
-      <div className="form">
-          <input placeholder="Введите текст . ." type="text" />
-          <button>
-              добавить
-          </button>
-      </div>
-      <div className="todos">
-          {newTodos}
-      </div>
+      <Header />
+      <Form text={text} setText={setText} addTodo={addTodo} />
+      <Todos todos={todos} makeFavorite={makeFavorite} deleteTodo={deleteTodo} />
     </div>
 
   );
